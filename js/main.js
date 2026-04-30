@@ -15,11 +15,16 @@ function save() {
 function load() {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return;
-  const data = JSON.parse(raw);
-  lines = data.lines || [];
-  memos = data.memos || [];
-  if (lines.length > 0) {
-    document.getElementById('lyricsInput').value = lines.join('\n');
+  try {
+    const data = JSON.parse(raw);
+    lines = data.lines || [];
+    memos = data.memos || [];
+    if (lines.length > 0) {
+      document.getElementById('lyricsInput').value = lines.join('\n');
+      render();
+    }
+  } catch (e) {
+    localStorage.removeItem(STORAGE_KEY);
     render();
   }
 }
