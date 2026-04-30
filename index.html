@@ -10,11 +10,13 @@
 
 <header>
   <h1>🎵 歌詞アノテーション</h1>
+  <div class="legend">／=ブレス &nbsp;〰=こぶし &nbsp;↗=しゃくり &nbsp;H=ハモリ &nbsp;〜=ビブラート &nbsp;●=強調 &nbsp;○=弱く &nbsp;⌒=タメ</div>
 </header>
 
 <main>
-  <div class="card">
-    <div class="card-title">歌詞を入力</div>
+  <div class="card no-print">
+    <div class="card-title">曲情報・歌詞を入力</div>
+    <input type="text" id="titleInput" class="title-input" placeholder="曲タイトル" oninput="onTitleChange()">
     <textarea id="lyricsInput" placeholder="ここに歌詞を貼り付けてください&#10;（1行ずつ処理されます）"></textarea>
     <div class="btn-row">
       <button class="btn-primary" onclick="parseLyrics()">セット</button>
@@ -23,10 +25,20 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card no-print">
     <div class="card-title">アノテーション</div>
     <div class="annotation-list" id="annotationList">
       <div class="empty-state">歌詞を入力して「セット」を押してください</div>
+    </div>
+  </div>
+
+  <div class="card" id="cardSection">
+    <div class="card-title no-print">歌詞カード（印刷プレビュー）</div>
+    <div id="lyricsCard">
+      <div class="card-empty">歌詞がありません</div>
+    </div>
+    <div class="btn-row no-print">
+      <button class="btn-print" onclick="window.print()">🖨 印刷</button>
     </div>
   </div>
 </main>
