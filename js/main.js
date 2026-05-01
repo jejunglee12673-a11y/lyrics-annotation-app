@@ -13,6 +13,7 @@ const TAGS = [
 
 let lines = [];
 let memos = [];
+let falsetto = [];
 let editingIndex = -1;
 
 function onTitleChange() {
@@ -22,7 +23,7 @@ function onTitleChange() {
 
 function save() {
   const title = document.getElementById('titleInput').value;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ title, lines, memos }));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ title, lines, memos, falsetto }));
   const el = document.getElementById('saveNotice');
   el.textContent = '保存済み ✓';
   clearTimeout(el._timer);
@@ -37,6 +38,7 @@ function load() {
     document.getElementById('titleInput').value = data.title || '';
     lines = data.lines || [];
     memos = data.memos || [];
+    falsetto = data.falsetto || lines.map(() => false);
     if (lines.length > 0) {
       document.getElementById('lyricsInput').value = lines.join('\n');
       render();
@@ -55,6 +57,7 @@ function parseLyrics() {
   const newLines = text.split('\n');
   lines = lines.concat(newLines);
   memos = memos.concat(newLines.map(() => ''));
+  falsetto = falsetto.concat(newLines.map(() => false));
   document.getElementById('lyricsInput').value = '';
   render();
   renderCard();
@@ -65,6 +68,7 @@ function clearAll() {
   if (!confirm('すべてのデータを消去しますか？')) return;
   lines = [];
   memos = [];
+  falsetto = [];
   document.getElementById('titleInput').value = '';
   document.getElementById('lyricsInput').value = '';
   localStorage.removeItem(STORAGE_KEY);
@@ -101,6 +105,13 @@ function memoToCardHtml(memo) {
   return esc(memo).replace(/□/g, '<span class="memo-blank">□</span>');
 }
 
+function toggleFalsetto(i) {
+  falsetto[i] = !falsetto[i];
+  render();
+  renderCard();
+  save();
+}
+
 function startEdit(i) {
   editingIndex = i;
   render();
@@ -132,9 +143,10 @@ function render() {
 
   list.innerHTML = lines.map((line, i) => {
     const isEmpty = line.trim() === '';
+    const fc = falsetto[i] ? ' lyric-falsetto' : '';
     const lyricHtml = isEmpty
-      ? '<span class="lyric empty-line">（空行）</span>'
-      : `<span class="lyric">${esc(line)}</span>`;
+      ? `<span class="lyric empty-line${fc}">（空行）</span>`
+      : `<span class="lyric${fc}">${esc(line)}</span>`;
 
     const tagBtns = TAGS.map(t =>
       `<button class="tag" onclick="insertTag(${i},'${t.symbol}')" title="${t.label}">${t.symbol}</button>`
@@ -151,6 +163,7 @@ function render() {
       : `<div class="row-top">
            <span class="line-no">${i + 1}</span>
            ${lyricHtml}
+           <button class="${falsetto[i] ? 'btn-falsetto active' : 'btn-falsetto'}" onclick="toggleFalsetto(${i})">ファルセット</button>
            <button class="btn-edit" onclick="startEdit(${i})">編集</button>
          </div>`;
 
@@ -189,7 +202,7 @@ function renderCard() {
   const rowsHtml = lines.map((line, i) => `
     <div class="card-row">
       <span class="card-line-no">${i + 1}</span>
-      <span class="card-lyric">${esc(line) || '　'}</span>
+      <span class="card-lyric${falsetto[i] ? ' card-lyric-falsetto' : ''}">${esc(line) || '　'}</span>
       <span class="card-memo">${memoToCardHtml(memos[i] || '')}</span>
     </div>
   `).join('');

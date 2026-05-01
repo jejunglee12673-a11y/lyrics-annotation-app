@@ -164,6 +164,7 @@ button:hover { opacity: 0.85; }
 }
 
 .lyric.empty-line { color: #ccc; font-style: italic; font-size: 0.85rem; }
+.lyric.lyric-falsetto { color: #7c3aed; }
 
 .tags {
   display: flex;
@@ -210,6 +211,27 @@ button:hover { opacity: 0.85; }
 }
 
 .memo-input::placeholder { color: #ccc; }
+
+/* ファルセット */
+.btn-falsetto {
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  background: #f5f3ff;
+  color: #7c3aed;
+  border: 1px solid #ddd8fe;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.btn-falsetto.active {
+  background: #7c3aed;
+  color: white;
+  border-color: #7c3aed;
+}
+
+.btn-falsetto:hover { opacity: 0.85; }
 
 /* 行編集 */
 .btn-edit {
@@ -310,6 +332,8 @@ button:hover { opacity: 0.85; }
   font-size: 0.95rem;
   line-height: 1.5;
 }
+
+.card-lyric-falsetto { color: #7c3aed; }
 
 .card-empty {
   text-align: center;
