@@ -82,6 +82,7 @@ function updateMemo(i, value) {
   memos[i] = value;
   save();
   renderCard();
+  updateCharDisplay(i);
 }
 
 function insertTag(i, symbol) {
@@ -91,6 +92,7 @@ function insertTag(i, symbol) {
   memos[i] = input.value;
   save();
   renderCard();
+  updateCharDisplay(i);
   input.focus();
 }
 
@@ -112,6 +114,39 @@ function toggleFalsetto(i) {
   render();
   renderCard();
   save();
+}
+
+// 歌詞を1文字ずつ分割し、メモトークンを各文字の上に配置したHTMLを返す
+function buildLyricChars(line, memo, falsettoClass, isCard) {
+  if (line.trim() === '') {
+    return '<span class="lyric empty-line">（空行）</span>';
+  }
+  const chars = [...line];
+  const tokens = memo.trim() ? memo.trim().split(/\s+/) : [];
+  const charDivs = chars.map((ch, j) => {
+    const rawNote = tokens[j] || '';
+    const noteContent = (isCard && rawNote === '□')
+      ? '<span class="memo-blank">□</span>'
+      : esc(rawNote);
+    return `<div class="char"><div class="note">${noteContent}</div><div class="text">${esc(ch)}</div></div>`;
+  }).join('');
+  return `<div class="lyric-chars${falsettoClass}">${charDivs}</div>`;
+}
+
+// メモ更新時に対象行の文字表示だけを差し替える（フォーカスを奪わないため）
+function updateCharDisplay(i) {
+  const rows = document.querySelectorAll('#annotationList .row');
+  if (!rows[i]) return;
+  const container = rows[i].querySelector('.lyric-chars');
+  if (!container) return;
+  const fc = falsetto[i] ? ' lyric-falsetto' : '';
+  const chars = [...lines[i]];
+  const tokens = memos[i].trim() ? memos[i].trim().split(/\s+/) : [];
+  container.className = `lyric-chars${fc}`;
+  container.innerHTML = chars.map((ch, j) => {
+    const note = tokens[j] || '';
+    return `<div class="char"><div class="note">${esc(note)}</div><div class="text">${esc(ch)}</div></div>`;
+  }).join('');
 }
 
 function startEdit(i) {
@@ -144,11 +179,8 @@ function render() {
   }
 
   list.innerHTML = lines.map((line, i) => {
-    const isEmpty = line.trim() === '';
     const fc = falsetto[i] ? ' lyric-falsetto' : '';
-    const lyricHtml = isEmpty
-      ? `<span class="lyric empty-line${fc}">（空行）</span>`
-      : `<span class="lyric${fc}">${esc(line)}</span>`;
+    const lyricHtml = buildLyricChars(line, memos[i] || '', fc, false);
 
     const tagBtns = TAGS.map(t =>
       `<button class="tag" onclick="insertTag(${i},'${t.symbol}')" title="${t.label}">${t.symbol}</button>`
@@ -201,13 +233,15 @@ function renderCard() {
     ? `<div class="card-song-title">${esc(title)}</div>`
     : '';
 
-  const rowsHtml = lines.map((line, i) => `
-    <div class="card-row">
-      <span class="card-line-no">${i + 1}</span>
-      <span class="card-lyric${falsetto[i] ? ' card-lyric-falsetto' : ''}">${esc(line) || '　'}</span>
-      <span class="card-memo">${memoToCardHtml(memos[i] || '')}</span>
-    </div>
-  `).join('');
+  const rowsHtml = lines.map((line, i) => {
+    const fc = falsetto[i] ? ' lyric-falsetto' : '';
+    return `
+      <div class="card-row">
+        <span class="card-line-no">${i + 1}</span>
+        ${buildLyricChars(line, memos[i] || '', fc, true)}
+      </div>
+    `;
+  }).join('');
 
   const legendHtml = `
     <div class="card-legend">
