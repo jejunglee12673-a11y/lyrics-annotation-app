@@ -164,7 +164,13 @@ button:hover { opacity: 0.85; }
 }
 
 .lyric.empty-line { color: #ccc; font-style: italic; font-size: 0.85rem; }
-.lyric.lyric-falsetto { color: #7c3aed; }
+.lyric.lyric-falsetto {
+  background-color: #ede9fe;
+  border-radius: 3px;
+  padding: 0 2px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
 
 .tags {
   display: flex;
@@ -333,7 +339,13 @@ button:hover { opacity: 0.85; }
   line-height: 1.5;
 }
 
-.card-lyric-falsetto { color: #7c3aed; }
+.card-lyric-falsetto {
+  background-color: #ede9fe;
+  border-radius: 3px;
+  padding: 0 2px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
 
 .card-empty {
   text-align: center;
