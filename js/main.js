@@ -1,5 +1,4 @@
 const STORAGE_KEY = 'lyrics-annotation-v1';
-const CLEAR_SYMBOL = '□';
 const TAGS = [
   { label: 'ブレス',    symbol: '／' },
   { label: 'こぶし',    symbol: '〰' },
@@ -9,7 +8,7 @@ const TAGS = [
   { label: '強調',      symbol: '●' },
   { label: '弱く',      symbol: '○' },
   { label: 'タメ',      symbol: '⌒' },
-  { label: 'クリア',    symbol: CLEAR_SYMBOL },
+  { label: '空欄',      symbol: '□' },
 ];
 
 let lines = [];
@@ -84,14 +83,9 @@ function updateMemo(i, value) {
 
 function insertTag(i, symbol) {
   const input = document.getElementById('memo-' + i);
-  if (symbol === CLEAR_SYMBOL) {
-    input.value = '';
-    memos[i] = '';
-  } else {
-    const sep = input.value ? ' ' : '';
-    input.value += sep + symbol;
-    memos[i] = input.value;
-  }
+  const sep = input.value ? ' ' : '';
+  input.value += sep + symbol;
+  memos[i] = input.value;
   save();
   renderCard();
   input.focus();
@@ -103,6 +97,11 @@ function esc(str) {
 
 function escAttr(str) {
   return str.replace(/"/g,'&quot;');
+}
+
+// □ を幅だけ保って不可視にする（印刷プレビュー用）
+function memoToCardHtml(memo) {
+  return esc(memo).replace(/□/g, '<span class="memo-blank">□</span>');
 }
 
 function render() {
@@ -162,7 +161,7 @@ function renderCard() {
     <div class="card-row">
       <span class="card-line-no">${i + 1}</span>
       <span class="card-lyric">${esc(line) || '　'}</span>
-      <span class="card-memo">${esc(memos[i] || '')}</span>
+      <span class="card-memo">${memoToCardHtml(memos[i] || '')}</span>
     </div>
   `).join('');
 

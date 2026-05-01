@@ -263,6 +263,9 @@ button:hover { opacity: 0.85; }
   font-size: 0.9rem;
 }
 
+/* □ を幅保持・不可視にする */
+.memo-blank { visibility: hidden; }
+
 .card-legend {
   margin-top: 20px;
   padding-top: 10px;
