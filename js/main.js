@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'lyrics-annotation-v1';
+const CLEAR_SYMBOL = '□';
 const TAGS = [
   { label: 'ブレス',    symbol: '／' },
   { label: 'こぶし',    symbol: '〰' },
@@ -8,6 +9,7 @@ const TAGS = [
   { label: '強調',      symbol: '●' },
   { label: '弱く',      symbol: '○' },
   { label: 'タメ',      symbol: '⌒' },
+  { label: 'クリア',    symbol: CLEAR_SYMBOL },
 ];
 
 let lines = [];
@@ -82,9 +84,14 @@ function updateMemo(i, value) {
 
 function insertTag(i, symbol) {
   const input = document.getElementById('memo-' + i);
-  const sep = input.value ? ' ' : '';
-  input.value += sep + symbol;
-  memos[i] = input.value;
+  if (symbol === CLEAR_SYMBOL) {
+    input.value = '';
+    memos[i] = '';
+  } else {
+    const sep = input.value ? ' ' : '';
+    input.value += sep + symbol;
+    memos[i] = input.value;
+  }
   save();
   renderCard();
   input.focus();
