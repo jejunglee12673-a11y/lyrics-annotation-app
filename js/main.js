@@ -1,14 +1,16 @@
 const STORAGE_KEY = 'lyrics-annotation-v1';
 const TAGS = [
-  { label: 'ブレス',    symbol: '／' },
-  { label: 'こぶし',    symbol: '〰' },
-  { label: 'しゃくり',  symbol: '↗' },
-  { label: 'ハモリ',    symbol: 'H'  },
-  { label: 'ビブラート', symbol: '〜' },
-  { label: '強調',      symbol: '●' },
-  { label: '弱く',      symbol: '○' },
-  { label: 'タメ',      symbol: '⌒' },
-  { label: '空欄',      symbol: '□' },
+  { label: 'ブレス',       symbol: '／' },
+  { label: 'こぶし',       symbol: '◎' },
+  { label: 'しゃくり',     symbol: '↗' },
+  { label: 'フォール',     symbol: '↘' },
+  { label: 'ハモリ',       symbol: 'H'  },
+  { label: 'ビブラート',   symbol: '〰' },
+  { label: 'エッジボイス', symbol: '×' },
+  { label: '強調',         symbol: '●' },
+  { label: '弱く',         symbol: '○' },
+  { label: 'タメ',         symbol: '⌒' },
+  { label: '空欄',         symbol: '□' },
 ];
 
 let lines = [];
@@ -209,7 +211,7 @@ function renderCard() {
 
   const legendHtml = `
     <div class="card-legend">
-      ／=ブレス &nbsp;〰=こぶし &nbsp;↗=しゃくり &nbsp;H=ハモリ &nbsp;〜=ビブラート &nbsp;●=強調 &nbsp;○=弱く &nbsp;⌒=タメ
+      ／=ブレス &nbsp;◎=こぶし &nbsp;↗=しゃくり &nbsp;↘=フォール &nbsp;H=ハモリ &nbsp;〰=ビブラート &nbsp;×=エッジボイス &nbsp;●=強調 &nbsp;○=弱く &nbsp;⌒=タメ
     </div>
   `;
 
