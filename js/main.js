@@ -13,6 +13,7 @@ const TAGS = [
 
 let lines = [];
 let memos = [];
+let editingIndex = -1;
 
 function onTitleChange() {
   save();
@@ -100,6 +101,27 @@ function memoToCardHtml(memo) {
   return esc(memo).replace(/□/g, '<span class="memo-blank">□</span>');
 }
 
+function startEdit(i) {
+  editingIndex = i;
+  render();
+  const input = document.getElementById('lyric-edit');
+  if (input) input.focus();
+}
+
+function saveEdit(i) {
+  const input = document.getElementById('lyric-edit');
+  if (input) lines[i] = input.value;
+  editingIndex = -1;
+  render();
+  renderCard();
+  save();
+}
+
+function cancelEdit() {
+  editingIndex = -1;
+  render();
+}
+
 function render() {
   const list = document.getElementById('annotationList');
 
@@ -118,12 +140,23 @@ function render() {
       `<button class="tag" onclick="insertTag(${i},'${t.symbol}')" title="${t.label}">${t.symbol}</button>`
     ).join('');
 
+    const rowTop = editingIndex === i
+      ? `<div class="row-top">
+           <span class="line-no">${i + 1}</span>
+           <input class="lyric-edit-input" id="lyric-edit" value="${escAttr(line)}"
+             onkeydown="if(event.key==='Enter')saveEdit(${i});if(event.key==='Escape')cancelEdit()">
+           <button class="btn-save-edit" onclick="saveEdit(${i})">保存</button>
+           <button class="btn-cancel-edit" onclick="cancelEdit()">キャンセル</button>
+         </div>`
+      : `<div class="row-top">
+           <span class="line-no">${i + 1}</span>
+           ${lyricHtml}
+           <button class="btn-edit" onclick="startEdit(${i})">編集</button>
+         </div>`;
+
     return `
       <div class="row">
-        <div class="row-top">
-          <span class="line-no">${i + 1}</span>
-          ${lyricHtml}
-        </div>
+        ${rowTop}
         <div class="tags">${tagBtns}</div>
         <div class="memo-wrap">
           <input
