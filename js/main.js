@@ -52,13 +52,9 @@ function parseLyrics() {
   const text = document.getElementById('lyricsInput').value;
   if (!text.trim()) return;
   const newLines = text.split('\n');
-  // 行が一致する場合は既存メモを引き継ぐ
-  const newMemos = newLines.map(line => {
-    const i = lines.indexOf(line);
-    return i !== -1 ? memos[i] : '';
-  });
-  lines = newLines;
-  memos = newMemos;
+  lines = lines.concat(newLines);
+  memos = memos.concat(newLines.map(() => ''));
+  document.getElementById('lyricsInput').value = '';
   render();
   renderCard();
   save();
